@@ -20,12 +20,12 @@ This all revolves around finding the motivation to actually do it.
 
 ## Options
 
-| OPTION                | What it does                                                                      |
-| :-------------------- | --------------------------------------------------------------------------------: |
-| `--appdata`, `-a`     | `xdg-open` the AppData folder for the current Prefix                              |
-| `--prefix=<PATH>`     | Use PATH as prefix, or `$XDG_DATA_HOME/UMUwu/prefix/NAME` if PATH contains no `/` |
-| `--proton=<PATH>`     | Use PATH as `$PROTONPATH`                                                         |
-| `--prefix-here`, `-P` | Use `./umuwu-prefix` as `$WINEPREFIX`                                             |
-| `--simulate`, `-s`    | Display variables and exit. Don't actually launch anything.                       |
-| `--`                  | Do not process anymore arguments for `umuwu`                                      |
-| `--help`, `-?`        | Display help message                                                              |
+| OPTION                | What it does                                                                             |
+| :-------------------- | ---------------------------------------------------------------------------------------: |
+| `--appdata`, `-a`     | `xdg-open` the AppData folder for the current Prefix                                     |
+| `--prefix=<PATH>`     | Use PATH as `$WINEPREIFX`, or `$XDG_DATA_HOME/UMUwu/prefix/NAME` if PATH contains no `/` |
+| `--proton=<PATH>`     | Use PATH as `$PROTONPATH`                                                                |
+| `--prefix-here`, `-P` | Use `./umuwu-prefix` as `$WINEPREFIX`                                                    |
+| `--simulate`, `-s`    | Display variables and exit. Don't actually launch anything.                              |
+| `--`                  | Do not process anymore arguments for `umuwu`                                             |
+| `--help`, `-?`        | Display help message                                                                     |
