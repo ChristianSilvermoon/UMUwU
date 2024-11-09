@@ -26,6 +26,7 @@ This all revolves around finding the motivation to actually do it.
 | `--prefix=<PATH>`     | Use PATH as `$WINEPREIFX`, or `$XDG_DATA_HOME/UMUwu/prefix/NAME` if PATH contains no `/` |
 | `--proton=<PATH>`     | Use PATH as `$PROTONPATH`                                                                |
 | `--prefix-here`, `-P` | Use `./umuwu-prefix` as `$WINEPREFIX`                                                    |
+| `--script`, `-S`      | Print BASH script for launching without `umuwu`                                          |
 | `--simulate`, `-s`    | Display variables and exit. Don't actually launch anything.                              |
 | `--`                  | Do not process anymore arguments for `umuwu`                                             |
 | `--help`, `-?`        | Display help message                                                                     |

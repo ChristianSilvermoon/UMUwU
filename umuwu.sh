@@ -39,6 +39,7 @@ help_msg() {
 		"--prefix=<PATH>"   "Use specific prefix directory"          \
 		""                  "  if PATH contains no \"/\", then"      \
 		""                  "  under $UMUWU_DATA/prefix/<NAME>"      \
+		"--script, -S"      "Print BASH script for launching."       \
 		"--simulate, -s"    "Don't actually launch anything"         \
 		"--prefix-here, -P" "Set \$WINEPREIFX to \$PWD/umuwu-prefix" \
 		"--help, -?"        "Display this message"
@@ -64,12 +65,13 @@ arg_proc() {
 					err -e "ERROR, Proton Path does not exist.\n  $PROTONPATH"
 					exit 1
 				;;
-			"--prefix-here"|"-P") WINEPREFIX="./umuwu-prefix" ;;
+			"--prefix-here"|"-P") WINEPREFIX="$PWD/umuwu-prefix" ;;
 			"--prefix="*)
 				WINEPREFIX="${a#*=}"
 				[[ ! $WINEPREFIX =~ / ]] && WINEPREFIX="${UMUWU_DATA}/prefix/${WINEPREFIX}"
 				;;
-			"--simulate"|"-s") UMUWU_SIMULATE=true ;;
+			"--script"|"-S")   UMUWU_MODE=script     ;;
+			"--simulate"|"-s") UMUWU_MODE=simulate   ;;
 			"--")              narg=1; continue ;;
 			"-"*)              err "Unknown Arg: $a" 1>&2; exit 1 ;;
 			*) EXE+=( "$a" ) ;;
@@ -77,22 +79,50 @@ arg_proc() {
 	done
 }
 
+script_gen() {
+	local LINES
+	LINES=(
+		"#!/bin/bash"
+		"export WINEPREFIX=$WINEPREFIX"
+		"export PROTONPATH=$PROTONPATH"
+		"export STORE=$STORE"
+		"export GAMEID=$GAMEID"
+		"exec umu-run -- $(printf -- "\"%s\" " "${EXE[@]}")"
+	)
+
+	printf -- "%s\n" "${LINES[@]}"
+}
+
+umuwu_config_print() {
+	echo "UMU Config:"
+	printf " %-28s : %s\n" \
+		'$PROTONPATH'  "$PROTONPATH" \
+		'$WINEPREFIX'  "$WINEPREFIX" \
+		'$STORE'       "${STORE:-$'\e'[2mN/a$'\e'[0m}" \
+		'$GAMEID'      "$GAMEID"
+	printf " %-28s : " "EXECUTE"
+	printf -- "\"%s\" " "umu-run" "--" "${EXE[@]}"
+	echo ""
+}
+
 arg_proc "$@"
 [ "$PROTONPATH" ] || proton_scan
 
-
-echo "UMU Config:"
-printf " %-28s : %s\n" \
-	'$PROTONPATH'  "$PROTONPATH" \
-	'$WINEPREFIX'  "$WINEPREFIX" \
-	'$STORE'       "${STORE:-$'\e'[2mN/a$'\e'[0m}" \
-	'$GAMEID'      "$GAMEID"
-printf " %-28s : " "EXECUTE"
-printf -- "\"%s\" " "umu-run" "${EXE[@]}"
-echo
-[ "$UMUWU_SIMULATE" ] && echo -e "-----\nSimuated Only. Exiting.\n-----\n" && exit
-
-# Launch
-export PROTONPATH WINEPREFIX STORE GAMEID
-exec umu-run "${EXE[@]}"
+case "$UMUWU_MODE" in
+	"script")
+		script_gen
+		exit
+		;;
+	"simulate")
+		umuwu_config_print
+		echo -e "-----\nSimuated Only. Exiting.\n-----\n"
+		exit
+		;;
+	*)
+		# Launch
+		umuwu_config_print
+		export PROTONPATH WINEPREFIX STORE GAMEID
+		exec umu-run -- "${EXE[@]}"
+		;;
+esac
 
